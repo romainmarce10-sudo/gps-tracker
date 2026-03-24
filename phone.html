@@ -1,0 +1,47 @@
+<script>
+const TOKEN = "SECRET123";
+
+// 🆔 ID unique persistant
+let deviceId = localStorage.getItem("deviceId");
+if (!deviceId) {
+    deviceId = crypto.randomUUID();
+    localStorage.setItem("deviceId", deviceId);
+}
+
+let ws;
+
+function connect() {
+    ws = new WebSocket('ws://192.168.X.X:9090');
+
+    ws.onopen = () => {
+        console.log("✅ Connecté serveur");
+    };
+
+    ws.onclose = () => {
+        console.log("🔁 Reconnexion...");
+        setTimeout(connect, 2000);
+    };
+}
+
+connect();
+
+function sendPosition(lat, lon) {
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            token: TOKEN,
+            id: deviceId,
+            lat,
+            lon
+        }));
+    }
+}
+
+// 🔋 GPS optimisé
+navigator.geolocation.watchPosition(pos => {
+    sendPosition(pos.coords.latitude, pos.coords.longitude);
+}, null, {
+    enableHighAccuracy: true,
+    maximumAge: 5000,
+    timeout: 10000
+});
+</script>
