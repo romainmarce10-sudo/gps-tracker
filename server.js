@@ -1,11 +1,19 @@
+const http = require('http');
 const WebSocket = require('ws');
 
-const PORT = 9090;
+const PORT = process.env.PORT || 9090;
 const TOKEN = "SECRET123";
 
-const wss = new WebSocket.Server({ port: PORT });
+// 🌐 Serveur HTTP (obligatoire pour Render)
+const server = http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end("✅ GPS Tracker server running");
+});
 
-console.log("✅ WebSocket lancé sur port", PORT);
+// 🔌 WebSocket branché sur le serveur HTTP
+const wss = new WebSocket.Server({ server });
+
+console.log("🚀 Serveur lancé sur port", PORT);
 
 wss.on('connection', ws => {
     console.log("📡 Appareil connecté");
@@ -14,23 +22,15 @@ wss.on('connection', ws => {
         try {
             const data = JSON.parse(message.toString());
 
-            // 🔐 Vérif token
-            if (data.token !== TOKEN) {
-                console.log("⛔ Token invalide");
-                return;
-            }
+            if (data.token !== TOKEN) return;
 
-            // 🎯 Validation data
             if (
                 typeof data.id !== "string" ||
                 typeof data.lat !== "number" ||
                 typeof data.lon !== "number"
-            ) {
-                console.log("⚠️ Données invalides");
-                return;
-            }
+            ) return;
 
-            // 📡 Broadcast à tous
+            // broadcast
             wss.clients.forEach(client => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify(data));
@@ -38,11 +38,13 @@ wss.on('connection', ws => {
             });
 
         } catch (err) {
-            console.log("❌ Erreur JSON");
+            console.log("❌ erreur JSON");
         }
     });
 
     ws.on('close', () => {
-        console.log("🔌 Déconnexion");
+        console.log("🔌 Déconnecté");
     });
 });
+
+server.listen(PORT);
