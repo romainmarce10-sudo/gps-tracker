@@ -1,6 +1,6 @@
 const map = L.map('map').setView([20,0], 2);
 
-// ✅ Carte GRATUITE sans clé API
+// Carte OpenStreetMap gratuite
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -23,12 +23,20 @@ function updateDevice(id, lat, lon){
     }
 }
 
-// 🌍 WebSocket Render
-const socket = new WebSocket('wss://gps-tracker.onrender.com');
+// WebSocket vers Render
+const socket = new WebSocket('wss://gps-tracker-4gd1.onrender.com');
+
+socket.onopen = () => {
+    console.log("WebSocket connecté !");
+};
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if(data.id && data.lat && data.lon){
         updateDevice(data.id, data.lat, data.lon);
     }
+};
+
+socket.onerror = (err) => {
+    console.log("❌ WebSocket error", err);
 };

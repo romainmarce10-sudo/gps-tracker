@@ -2,26 +2,28 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>GPS Tracker Phone</title>
+<title>Phone GPS Tracker</title>
 </head>
 <body>
-<h1>GPS Tracker – Phone</h1>
 <script>
-const ws = new WebSocket('wss://gps-tracker.onrender.com'); // <-- URL Render
+const TOKEN = "SECRET123"; // doit correspondre à server.js
+const ws = new WebSocket('wss://gps-tracker-4gd1.onrender.com');
+
+ws.onopen = () => console.log("WebSocket connecté depuis le téléphone !");
 
 function sendPosition(lat, lon){
     if(ws.readyState === WebSocket.OPEN){
-        ws.send(JSON.stringify({
-            id: 'MonTel',
-            lat,
-            lon,
-            token: "SECRET123" // identifiant sécurisé
-        }));
+        ws.send(JSON.stringify({ id:'MonTel', lat, lon, token: TOKEN }));
     }
 }
 
 navigator.geolocation.watchPosition(pos => {
     sendPosition(pos.coords.latitude, pos.coords.longitude);
+}, err => {
+    console.error("Erreur géolocalisation:", err);
+}, {
+    enableHighAccuracy: true,
+    maximumAge: 1000
 });
 </script>
 </body>
