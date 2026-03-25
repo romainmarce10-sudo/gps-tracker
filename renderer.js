@@ -33,7 +33,7 @@ function updateDevice(id, lat, lon) {
     }
 }
 
-const socket = new WebSocket('ws://192.168.X.X:9090');
+const socket = new WebSocket('wss://gps-tracker.onrender.com');
 
 socket.onmessage = (event) => {
     try {

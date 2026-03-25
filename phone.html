@@ -11,7 +11,7 @@ if (!deviceId) {
 let ws;
 
 function connect() {
-    ws = new WebSocket('ws://192.168.X.X:9090');
+    ws = new WebSocket('wss://gps-tracker.onrender.com');
 
     ws.onopen = () => {
         console.log("✅ Connecté serveur");
