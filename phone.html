@@ -1,47 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>GPS Tracker Phone</title>
+</head>
+<body>
+<h1>GPS Tracker – Phone</h1>
 <script>
-const TOKEN = "SECRET123";
+const ws = new WebSocket('wss://gps-tracker.onrender.com'); // <-- URL Render
 
-// 🆔 ID unique persistant
-let deviceId = localStorage.getItem("deviceId");
-if (!deviceId) {
-    deviceId = crypto.randomUUID();
-    localStorage.setItem("deviceId", deviceId);
-}
-
-let ws;
-
-function connect() {
-    ws = new WebSocket('wss://gps-tracker.onrender.com');
-
-    ws.onopen = () => {
-        console.log("✅ Connecté serveur");
-    };
-
-    ws.onclose = () => {
-        console.log("🔁 Reconnexion...");
-        setTimeout(connect, 2000);
-    };
-}
-
-connect();
-
-function sendPosition(lat, lon) {
-    if (ws.readyState === WebSocket.OPEN) {
+function sendPosition(lat, lon){
+    if(ws.readyState === WebSocket.OPEN){
         ws.send(JSON.stringify({
-            token: TOKEN,
-            id: deviceId,
+            id: 'MonTel',
             lat,
-            lon
+            lon,
+            token: "SECRET123" // identifiant sécurisé
         }));
     }
 }
 
-// 🔋 GPS optimisé
 navigator.geolocation.watchPosition(pos => {
     sendPosition(pos.coords.latitude, pos.coords.longitude);
-}, null, {
-    enableHighAccuracy: true,
-    maximumAge: 5000,
-    timeout: 10000
 });
 </script>
+</body>
+</html>
