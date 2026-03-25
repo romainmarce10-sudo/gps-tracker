@@ -1,6 +1,9 @@
 const map = L.map('map').setView([20,0], 2);
 
-L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png').addTo(map);
+// ✅ Carte GRATUITE sans clé API
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
 const devices = {};
 
@@ -20,7 +23,8 @@ function updateDevice(id, lat, lon){
     }
 }
 
-const socket = new WebSocket('wss://gps-tracker.onrender.com'); // <-- URL Render
+// 🌍 WebSocket Render
+const socket = new WebSocket('wss://gps-tracker.onrender.com');
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);

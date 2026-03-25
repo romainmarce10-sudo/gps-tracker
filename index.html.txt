@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>E-DEX Trading</title>
+  <style>
+    body {
+      background: black;
+      color: #00ffcc;
+      font-family: monospace;
+    }
+    .panel {
+      border: 1px solid #00ffcc;
+      padding: 10px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>E-DEX TRADING</h1>
+
+<div class="panel">
+  <h2>Marché Crypto</h2>
+  <div id="market"></div>
+</div>
+
+<div class="panel">
+  <h2>Carte du monde</h2>
+  <iframe src="https://www.openstreetmap.org/export/embed.html"
+          width="100%" height="300"></iframe>
+</div>
+
+<script src="renderer.js"></script>
+
+</body>
+</html>
